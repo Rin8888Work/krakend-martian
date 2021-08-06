@@ -12,7 +12,7 @@ import (
 	krakendgin "github.com/luraproject/lura/router/gin"
 	"github.com/luraproject/lura/transport/http/client"
 
-	"github.com/devopsfaith/krakend-martian"
+	"github.com/muoingon/krakend-martian"
 )
 
 func main() {
