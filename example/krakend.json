@@ -1,0 +1,70 @@
+{
+    "version": 2,
+    "name": "My lovely gateway",
+    "port": 8080,
+    "cache_ttl": 3600,
+    "timeout": "3s",
+    "extra_config": {
+      "github_com/devopsfaith/krakend-gologging": {
+        "level":  "DEBUG",
+        "prefix": "[KRAKEND]",
+        "syslog": false,
+        "stdout": true
+      }
+    },
+    "endpoints": [
+        {
+            "endpoint": "/supu",
+            "method": "GET",
+            "backend": [
+                {
+                    "host": [
+                        "http://127.0.0.1:8000"
+                    ],
+                    "url_pattern": "/__debug/supu",
+                    "extra_config": {
+                        "github.com/devopsfaith/krakend-martian": {
+                            "fifo.Group": {
+                                "scope": ["request", "response"],
+                                "aggregateErrors": true,
+                                "modifiers": [
+                                    {
+                                        "body.Modifier": {
+                                            "scope": ["request","response"],
+                                            "body": "eyJtc2ciOiJ5b3Ugcm9jayEifQ=="
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "endpoint": "/health",
+            "backend": [
+                {
+                    "url_pattern": "/",
+                    "host": [
+                        "http://fake-backend"
+                    ],
+                    "extra_config": {
+                        "github.com/devopsfaith/krakend-martian": {
+                            "static.Modifier": {
+                                "scope": [
+                                    "request",
+                                    "response"
+                                ],
+                                "rootPath": "/etc/krakend/static",
+                                "explicitPaths": {
+                                    "/": "/health.json"
+                                }
+                            }
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}
